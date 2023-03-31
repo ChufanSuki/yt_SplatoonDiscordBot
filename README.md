@@ -2,163 +2,174 @@
 
 Discord Bot on Python for Splatoon with s3s and stat.ink
 
-[DiscordBot_Heroku_Stat.ink](https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink)の後継Repositoryです。
+[DiscordBot_Heroku_Stat.ink](https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink)'s successor Repository.
 
 ## Introduction
 
-自分で使用しているDiscord BotのScriptを整理しました。
-詳しい使い方や試験などは後々行います。
+I organized the script of Discord Bot I use myself.
 
-公開済みの[DiscordBot_Heroku_Stat.ink](https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink)が、仕様変更やSplatoon 2->3への移行およびそれに伴うs2s->s3sの移行へのため実用に耐えなくなったことを受け、このRepositoryを作成しました。
+Detailed usage and exams will be performed later.
 
-s3sを用いてstat.inkへ戦績のアップロードを行います。(optionとしてlocalへの保存、localからのuploadもできます。)
-**戦績チェックに必要な`bullet_token`や`gtoken`もDiscord Botを通じて取得できます。**
+The published [DiscoBot_heroku_stat.ink](https://github.com/tomotom0/discordBot_heroku_stat.ink) is the transition to specifications, the transition to Splatoon 2-> 3, and to the transition of S3S for practical use. In response to the unbearable, I created this Repository.
+
+Upload the results to Stat.ink using S3s. (Save to Local as option, Upload from local can be done.)
+
+**`bullet_token` and `gtoken`, which are necessary for checking battle records, can also be obtained through Discord Bot.**
 
 ## Environments
 
-NASやGCPなどでの使用を想定しています。
-Herokuの無料枠はなくなってしまったそうです。
+It is assumed to be used in NAS and GCP.
 
-### 環境変数(Environmental Variables)
+It seems that Heroku's free frame has disappeared.
 
-|環境変数|既定値|説明|
+### Environmental Variables
+
+|Environmental Variables|Default Value|Description|
 |-|-|-|
-|`SPLATOON_DISCORD_BOT_TOKEN`|省略不可|discord botの`main`モードでのtoken。取得しておく必要があります。|
-|`SPLATOON_DISCORD_BOT_INTERVAL`|7200| 戦績アップロードの間隔 (単位は秒)。デフォルトは2時間。**900秒未満の場合は7200秒に変更されます。**|
-|`SPLATOON_DISCORD_BOT_UPLOAD`|true|定期戦績チェックでstat.inkにアップロードするか(true)、localにjsonファイルを保存するのみか(false)。デフォルトは前者。値はBoolean型で解釈されます。|
-|`SPLATOON_DISCORD_BOT_TOKEN_TEST`|省略可能|discord botの`test`モードでのtoken。省略された場合は`SPLATOON_DISCORD_BOT_TOKEN`が使用されます。|
-|`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_MAIN`||`main`モードでBOTが反応しないチャンネルのIDをカンマ(`,`)区切りでつなげたもの|
-|`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_TEST`||`test`モードでBOTが反応しないチャンネルのIDをカンマ(`,`)区切りでつなげたもの|
-|`SPLATOON_DISCORD_BOT_NOTICED_CHANNELS_MAIN`||`main`モードでBOTが反応するチャンネルのIDをカンマ(`,`)区切りでつなげたもの|
-|`SPLATOON_DISCORD_BOT_NOTICED_CHANNELS_TEST`||`test`モードでBOTが反応するチャンネルのIDをカンマ(`,`)区切りでつなげたもの|
 
-なお、各モードNOTICED_CHANNELSが空でない場合、IGNORED_CHANNELSは無視されます。
+| `SPLATOON_DISCORD_BOT_TOKEN` | Mandatory | TOKEN in`main` mode of Discord Bot. You need to get it. |
+| `SPLATOON_DISCORD_BOT_INTERVAL` | 7200 | Battle upload interval (unit is seconds). The default is 2 hours. **If it is less than 900 seconds, it will be changed to 7200 seconds.** |
+| `SPLATOON_DISCORD_BOT_UPLOAD` | True | To upload it to Stat.ink by checking the period (true), only save the JSON file in LOCAL (False). The default is the former. The value is interpreted in the Boolean type. |
+| `SPLATOON_DISCORD_BOT_TOKEN_TEST` | Omable | TOKEN in the`test` mode of Discord Bot. If omitted, `Splatoon_discord_bot_token` is used. |
+|`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_MAIN`||`main`A comma (`,`) separated list of channel IDs that the BOT does not respond to in the mode|
+|`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_TEST`||`test`A comma (`,`) separated list of channel IDs that the BOT does not respond to in the mode|
+|`SPLATOON_DISCORD_BOT_NOTICED_CHANNELS_MAIN`||`main`A comma (`,`) separated list of channel IDs that the BOT responds to in the mode|
+|`SPLATOON_DISCORD_BOT_NOTICED_CHANNELS_TEST`||`test`A comma (`,`) separated list of channel IDs that the BOT responds to in the mode|
 
-## Bot稼働まで
+If each mode Noticed_Channels is not empty, Ignored_channels is ignored.
 
-[DiscordBot_Heroku_Stat.ink](https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink)より引用。ただし、Herokuは非対応です。
+## Bot until operation
 
+Quoted from [DiscordBot_Heroku_Stat.ink](https://github.com/TomoTom0/DiscordBot_Heroku_Stat.ink). However, Heroku is not supported.
 
-### 事前準備 (必須)
-- **stat.ink**: アカウント作成、API KEYコピー
-- **discord**: アカウント作成、開発者登録、Application作成、DISCORD BOT TOKENコピー、BOTのserverへの追加、BOTの設定編集
-    - 参考 [Discord Botアカウント初期設定ガイド for Developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0cccdf)のうち**はじめに~サーバーへの登録**
-- **Nintendo**: 戦績チェックはSplatoon3をプレイしたNintendoアカウントが必要です。また、**あらかじめ既定のブラウザでNintendoアカウントにログインしておくとスムーズに進みます**。パスワードを忘れた場合、面倒くさがらずにパスワードをリセットしましょう。
+### Advance preparation (required)
 
-### Bot起動まで
+- **stat.ink**: Create account, API Key copy
 
-`git clone`などでダウンロードし、`pip3 install -r requirements.txt`で必要なライブラリをインストールします。最後に`python3 src/main.py`でdiscord botを起動します。terminalにエラーメッセージが出なければ大丈夫です。`screen`や`nohup`などは必要に応じて利用してください。
+- **discord**: Account creation, developer registration, Application creation, Discord Bot Token Copy, BOT Server, Bot settings and edit
+  - Reference [Discord bot account initial setting guide for developer](https://qiita.com/1ntegrale9/items/cb285053f2fa5d0CCCDF) **Register to the server**
 
-`python3 src/main.py test`のように1番目の引数として`test`を置くと`test`モードになります。`test`モードでは戦績の自動チェックが行われません。環境チェックなどの際にご利用ください。
+- **Nintendo**: The results check requires a Nintendo account that plays Splatoon3. Also, if you log in to the Nintendo account with the default browser in advance, it will proceed smoothly **. If you forget your password, reset your password without any trouble.
+
+### bot until startup
+
+Download with `git clone`, etc., and install the required library with`pip3 install -r requirements.txt`. Finally, start Discord Bot with `python3 src/main.py`. It is okay if there is no error message in Terminal. Please use `screen` and`nohup` as needed.
+
+If you place `test` as the first argument as the`python3 src/main.py test`, it will be in `test` mode. In `test` mode, the results are not performed automatically. Please use it when checking the environment.
 
 ### Intents設定
 
-Discord Botでmessageなどを取り扱うには(招待リンク生成の項目で選択する)Permissionに加えて、現在はIntentsの設定も必要です。
-[Discord.pyのReferenceページ](https://discordpy.readthedocs.io/en/stable/intents.html#privileged-intents)を参考に「Privileged Gateway Intents」の「MESSAGE CONTENT INTENT」を有効にしてください。
+In order to handle Message etc. in Discord Bot (selected in the invitation link generation), you also need to set Intents.
+
+[Discord.py Reference page](https://discordpy.readthedocs.io/en/stable/intents.html#privileged-intents) Please enable "MESSAGE CONTENT INTENT" of "Privileged Gateway Intents".
 
 ## How To Use
 
-`?`をprefixとして`?COMMAND`で各種コマンドを実行できます。一部のコマンドはスペース区切りで引数が入力可能です。
-また`?help`でbot自体のhelpおよびコマンド一覧を確認できます。さらに`?help COMMAND`で`COMMAND`の詳細を確認できます。
+You can execute various commands with `?command` with`?`As prefix. Some commands can enter arguments in space.
 
-### BotへのNintendoアカウント登録
+You can also check the Help and command list of the bot itself with `?help`. You can also check the details of `command` with`?help command`.
+
+### Nintendo account registration to bot
 
 `?startIksm <STATINK_API_KEY>`
-1. [stat.ink](https://stat.ink/)でアカウント登録を行い、API KEYをコピーします。
 
-<img with="80%" src="img/stat_ink_API.png"/>
+1. Submit your account with [stat.ink](https://stat.ink/) and copy API Key. <img with="80%" src="img/stat_ink_API.png"/>
 
-2. botとのDMなどで`?startIksm <STATINK_API_KEY>`のように、`?startIksm`に続けてAPI KEYを入力して送信します。
-(**botと同じサーバーに加入していれば、アカウントの設定にもよりますが、そのbotとDMを行うことが可能です。**)
 
-> ※注意
-**API KEYやTOKENなどと呼ばれるものは、すべからくアカウント名とパスワードのセットと等価です。他人にばれることはとても危険なことです。**
-家族やごく親しい友人しかいないサーバーでは大丈夫かもしれませんが、**できるだけbotとのDMで`?startIksm`は行ってください。**
+2. In the DM with the bot, such as `?startiksm <statink_api_key>`, enter and send API Key following `?startiksm`. (If you subscribe to the same server as **bot, you can perform that bot and DM, depending on the setting of the account.**)
+> ※Caution
 
-3. すると、botからURLが送られてくるのでそのリンクをタップします。
-<img with="80%" src="img/discord_startIksm.png"/>
+**API Key or Token, etc. are equivalent to the account name and password set. It's very dangerous to be exposed to others**
 
-4. リンク先でログインすると、連携アカウントの選択画面になるので、**「この人にする」を右クリック(スマホなら長押し)して、リンク先のURLをコピーします。**
-時間がかかりすぎるとタイムアウトとなり、`?startIksm`からやり直すことになります。
+It may be okay for a server with only a family or a close friend, but please go to `? Startiksm` with a DM with BOT as much as possible. **
+
+3. Then, the URL will be sent from the bot, so tap the link. <img with="80%" src="img/discord_startIksm.png"/>
+
+4. If you log in at the link destination, it will be the selection screen of the linked account. Right -click **“Put this person” (press and hold on a smartphone) and copy the linked URL.**
+
+If it takes too long, it will be a timeout and will start over from `? Startiksm`.
 <img with="80%" src="img/nintendo_select.png"/>
 
-5. discordに戻り、コピーしたリンクを貼り付け、少し待つと`新たにアカウントが登録されました。`と表示されます。
+5. Return to Discord, paste the copied link, and wait a little time, the new account was registered. `Is displayed.
 <img with="80%" src="img/discord_startIksm2.png"/>
 
-ここまでできれば、戦績の定期アップロードは自動で行われます。(デフォルトは2時間。環境変数`SPLATOON_DISCORD_BOT_INTERVAL`で設定されます。)
+If you can do so far, regular uploads will be performed automatically. (Default is 2 hours. Environmental variables are set with `SPLATOON_DISCORD_BOT_INTERVAL`.)
 
-### 各種コマンド
-`?help Splat`とBotに入力することでも確認できます。
+### Various commands
 
-|コマンド|引数|説明|
+You can also confirm by entering `?help splat` and bot.
+
+| Command | Arguments | Description |
 |-|-|-|
-|`?startIksm`|`STAT_INK_API_KEY`?| 新たにiksm_sessionを取得し、botにアカウントを登録します。 事前にstat.inkの登録を完了し、API KEYを取得しておいてください。引数が省略された場合、interactiveに入力が求められます。|
-|`?checkIksm`|`acc_name`?|指定されたアカウントのiksm_sessionを表示します。引数が省略された場合、interactiveに入力が求められます。|
-|`?rmIksm`|`acc_name`?|指定されたアカウントの情報を削除します。引数が省略された場合、interactiveに入力が求められます。|
-|`?showIksm`|なし|登録されているnintendoアカウント一覧を表示します。|
-|`?upIksm`|`acc_name`?|ただちに戦績チェックを行います。操作にはしばらく時間がかかります。`acc_name`が入力された場合、指定したアカウントのみ戦績チェックします。|
-|`?upIksmFromLocal`|`acc_name`?|localの戦績をstat.inkにアップロードします。操作にはしばらく時間がかかります。`acc_name`が入力された場合、指定したアカウントのみ戦績チェックします。|
+|`?startIksm`|`STAT_INK_API_KEY`?| Complete Stat.ink registration in advance and get API Key. If the argument is omitted, Interactive is required to enter. |
+|`?checkIksm`|`acc_name`?|If the argument is omitted, Interactive is required to enter. |
+||`?rmIksm`|`acc_name`?| Delete information on the specified account. If the argument is omitted, Interactive is required to enter. |
+|`?showIksm`| None | Display the registered Nintendo account list. |
+|`?upIksm`|`acc_name`?| The operation takes a while. If `ACC_NAME` is entered, only the specified account is checked. |
+|`?upIksmFromLocal`|`acc_name`?| The operation takes a while. If `ACC_NAME` is entered, only the specified account is checked. |
 
 ### Accessibility
 
-**v1.2.1以降、新規登録されたNintendoアカウント情報へのアクセスに一定の制限を加えました。**
-これは1つのBOTが複数のサーバーに加えられる状況を想定したものです。
-既定の振る舞いは以下の表の通りです。
+**Since v1.2.1, certain restrictions have been added to the newly registered Nintendo account information.**
 
-|`?startIksm`実行場所|アクセスが許可される場所|
+This is assumed that one bot can be added to multiple servers.
+
+The default behavior is as shown in the table below.
+
+|`?startIksm` Execution location | Place where access is allowed |
 |-|-|
-|サーバー|登録されたサーバー、および登録したユーザーとのDM|
-|DM|登録したユーザーとのDM|
+| Server | DM with registered server and registered users |
+| DM | DM with registered users |
 
-アクセス権限のない場所においては、Discord Botとのコマンドにおいて当該アカウントは登録されていないものとして扱われます。
-**v1.2.0以前に登録されていたNintendoアカウントについてはアクセスが無制限の状態です。**
+In a place without access authority, the account is treated as not registered in the command with Discord Bot.
 
-アクセス制限の情報は`configs_s3s/access_permission.json`内で管理されています。テキストファイルとして修正することで反映されます。
-`id`のリストとして`[-1]`が与えられた場合、その項目に関しては無制限となります。
+**V1.2.0 Nintendo accounts are unlimited for the Nintendo account.**
+
+Access restriction information is managed within `configs_s3s/access_permission.json`.
+
+If `[-1]` is given as a list of `id`, that item is unlimited.
 
 |key|value|
 |-|-|
-|guild|サーバー(guild)のidのリスト|
-|dm|discord userのidのリスト|
-|author|discord botを通じてpermission_infoを編集できるuserのidのリスト (編集機能は未実装)|
-
+|guild|List of server (guild) id|
+|dm|list of discord user ids|
+|author|A list of user ids that can edit permission_info through the discord bot (editing not yet implemented)|
 
 ## Future Works
 
-- [ ] Splatoon2にもs2s(splatnet2statink)にあわせた範囲で対応する
-- [ ] Repl.itに対応して無料でDiscord Botを利用できるようにする
+- [] Compatible with Splatoon2 within the range of s2s (splatnet2statink)
+- [] Discord bot can be used for free corresponding to Repl.it
 
-## Botを自分好みに改造したくなったら
-[Discord Bot 最速チュートリアル【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)を参考にしてください。
-(これだけでは不足していますが……)
+## If you want to modify your bot to your liking
 
-botのupdateへの対応や既存のbotとの併用を便利にするため、main.pyに触れずともconfig.pyのみで独自の変更を加えられるようにしました。
-本botが既定で対応していてかつ、config.pyで設定できる主な変数・関数は以下の通りです。もちろん、必要に応じた他の要素も追加可能です。
-`ext_splat.py`などを参考にCogも積極的に利用・追加してください。
+[Discord Bot Fastest Tutorial【Python&Heroku&GitHub】](https://qiita.com/1ntegrale9/items/aa4b373e8895273875a8#8-dynos%E3%81%AE%E8%A8%AD%E5%AE%9A)This is not enough.
 
-|変数/関数名|既定値/引数|説明|
+In order to make the bot update support and use with the existing bot conveniently, you can make a unique change with `config.py` without touching `main.py`.
+
+The main variables and functions that can be set by this bot and can be set with `config.py` are as follows. Of course, you can add other factors as needed.
+
+Please use and add COG aggressively with reference to `ext_splat.py` etc.
+
+|variables/function|default value/argument|description|
 |-|-|-|
-|`command_prefix`|`?`|本botにコマンドを与えるときのprefix|
-|`description`|既定値割愛|`?help`の際に表示される本botの説明|
-|`_additional_on_ready`|`bot`|`on_ready`のはじめに実行される関数|
-|`_additional_on_message_judge`|`bot, message`|`on_message`の1番目に実行される関数で、`message`に反応するべきかどうかを判断する。返り値が`False`ならば反応しない。|
-|`_additional_on_message_remake`|`bot, message`|`on_message`の2番目に実行される関数で、`message`を適切に作り変える。返り値が`discord.Message`classの場合のみ`message`が置き換えられる。|
-|`_additional_on_message`|`bot, message`|`on_message`の3番目に実行される関数|
-|`_additional_on_command_error`|`bot, ctx`|`on_command_error`のはじめに実行される関数|
-|`_additional_on_loop`|`bot`|`loop`のはじめに実行される関数|
+|`command_prefix`|`?`|Prefix when giving commands to this bot|
+|`description`|Default value omitted|Description of this bot displayed when `?help`|
+|`_additional_on_ready`|`bot`|function executed at the beginning of `on_ready`|
+|`_additional_on_message_judge`|`bot, message`|The first function executed in `on_message` that determines whether or not to react to `message`. If the return value is `False`, do not react.|
+|`_additional_on_message_remake`|`bot, message`|The second function that runs after `on_message` modifies `message` appropriately. `message` is replaced only if the return value is `discord.Message` class.|
+|`_additional_on_message`|`bot, message`|3rd function executed in `on_message`|
+|`_additional_on_command_error`|`bot, ctx`|function executed at the beginning of `on_command_error`|
+|`_additional_on_loop`|`bot`|function executed at beginning of `loop`|
 
+The variables and functions that are expected to be actively changed are as follows.
 
-積極的に変更されないことが予想される変数・関数は以下の通りです。
-
-|変数/関数名|既定値/引数|説明|
+|variables/function|default value/argument|description|
 |-|-|-|
-|`DISCORD_TOKENS`|既定値割愛|`mode`ごとにDiscord bot tokenを使い分けたい場合のための辞書です|
-|`mode`|`main`|`mode`に`main`が含まれる場合のみ戦績の定期チェックは行われます|
-|`const_paths`|既定値割愛|各種ディレクトリやファイルのパスの辞書です|
-
+|`DISCORD_TOKENS`|Dictionary for default value|A dictionary for when you want to use different Discord bot tokens for each `mode`|
+|`mode`|`main`|`mode` The regular check of the results is performed only when `main` is included|
+|`const_paths`|Professional Discount | Dictionary of various directory and file path|
 
 ## References
 
 - frozenpandaman/s3s: https://github.com/frozenpandaman/s3s
 - frozenpandaman/splatnet2statink: https://github.com/frozenpandaman/splatnet2statink
-
