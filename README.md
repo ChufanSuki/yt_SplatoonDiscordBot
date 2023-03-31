@@ -26,11 +26,10 @@ It seems that Heroku's free frame has disappeared.
 
 |Environmental Variables|Default Value|Description|
 |-|-|-|
-
-| `SPLATOON_DISCORD_BOT_TOKEN` | Mandatory | TOKEN in`main` mode of Discord Bot. You need to get it. |
-| `SPLATOON_DISCORD_BOT_INTERVAL` | 7200 | Battle upload interval (unit is seconds). The default is 2 hours. **If it is less than 900 seconds, it will be changed to 7200 seconds.** |
-| `SPLATOON_DISCORD_BOT_UPLOAD` | True | To upload it to Stat.ink by checking the period (true), only save the JSON file in LOCAL (False). The default is the former. The value is interpreted in the Boolean type. |
-| `SPLATOON_DISCORD_BOT_TOKEN_TEST` | Omable | TOKEN in the`test` mode of Discord Bot. If omitted, `Splatoon_discord_bot_token` is used. |
+|`SPLATOON_DISCORD_BOT_TOKEN`|Mandatory|TOKEN in`main` mode of Discord Bot. You need to get it.|
+|`SPLATOON_DISCORD_BOT_INTERVAL`|7200  Battle upload interval (unit is seconds). The default is 2 hours. **If it is less than 900 seconds, it will be changed to 7200 seconds.**|
+|`SPLATOON_DISCORD_BOT_UPLOAD`|True|To upload it to Stat.ink by checking the period (true), only save the JSON file in LOCAL (False). The default is the former. The value is interpreted in the Boolean type.|
+|`SPLATOON_DISCORD_BOT_TOKEN_TEST`|Omable| TOKEN in the`test` mode of Discord Bot. If omitted, `Splatoon_discord_bot_token` is used.|
 |`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_MAIN`||`main`A comma (`,`) separated list of channel IDs that the BOT does not respond to in the mode|
 |`SPLATOON_DISCORD_BOT_IGNORED_CHANNELS_TEST`||`test`A comma (`,`) separated list of channel IDs that the BOT does not respond to in the mode|
 |`SPLATOON_DISCORD_BOT_NOTICED_CHANNELS_MAIN`||`main`A comma (`,`) separated list of channel IDs that the BOT responds to in the mode|
@@ -57,7 +56,7 @@ Download with `git clone`, etc., and install the required library with`pip3 inst
 
 If you place `test` as the first argument as the`python3 src/main.py test`, it will be in `test` mode. In `test` mode, the results are not performed automatically. Please use it when checking the environment.
 
-### Intents設定
+### Intents setting
 
 In order to handle Message etc. in Discord Bot (selected in the invitation link generation), you also need to set Intents.
 
