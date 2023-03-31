@@ -4,6 +4,8 @@ import discord
 import glob2
 from dotenv import load_dotenv
 
+SPLATOON_DISCORD_BOT_TOKEN = "MTA5MTQwNjE5MDMzMzkzOTc4Mw.Gak5oY.LQaopVD8y6uFcPD6kNBBfqEGtcd_UX0Ndkor6g"
+
 # read .env
 env_files = sorted(glob2.glob("../../**/.env"))
 if len(env_files) > 0:
@@ -14,8 +16,8 @@ IsHeroku = False
 
 # 環境変数からDiscord bot tokenを読み取る
 DISCORD_TOKENS = {
-    "main": os.environ["SPLATOON_DISCORD_BOT_TOKEN"],
-    "test": os.environ.get("SPLATOON_DISCORD_BOT_TOKEN_TEST", os.environ["SPLATOON_DISCORD_BOT_TOKEN"])
+    "main": SPLATOON_DISCORD_BOT_TOKEN,
+    "test": os.environ.get("SPLATOON_DISCORD_BOT_TOKEN_TEST", SPLATOON_DISCORD_BOT_TOKEN)
 }
 
 # dir_path_present = os.path.dirname(__file__)
