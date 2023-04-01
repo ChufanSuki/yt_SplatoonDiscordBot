@@ -19,7 +19,7 @@ DM_IS_REQUIRED = config.DM_IS_REQUIRED
 
 
 class Splat(commands.Cog):
-    "Splatoonに関するコマンドがいくつもあります。"
+    "There are a number of commands related to Splatoon."
 
     def __init__(self, bot):
         self.bot = bot
@@ -72,19 +72,19 @@ class Splat(commands.Cog):
 
     @commands.command(description="", pass_context=True)
     async def startIksm(self, ctx: commands.Context, STAT_INK_API_KEY=""):
-        """新たにiksm_sessionを取得し、botにアカウントを登録します。\nstat.inkの登録を完了し、API KEYを取得しておいてください。"""
+        """
+        Acquire a new iksm_session and register an account with the bot. \nPlease complete the registration of stat.ink and obtain the API KEY.
+        """
         
         if DM_IS_REQUIRED and ctx.channel.guild is not None:
-            content="セキュリティの観点から`?startIksm`はBotとのDMで実行してください。"
+            content="For security reasons, run `?startIksm` in DM with Bot."
             await ctx.send(content)
             return
         
-        # 各種API KEYの入力確認
-        # 例外としてskipはOK。skipの場合、戦績のuploadはされません。
+        # Confirm input of various API KEYs
+        # Skip is OK as an exception. In the case of skip, battle results will not be uploaded.
         if len(STAT_INK_API_KEY) != 43 and STAT_INK_API_KEY != "skip":
-            content = "stat.inkの有効なAPI KEY(43文字)を入力してください。\n" +\
-                "stat.inkと連携する必要がない場合は`skip`\n" +\
-                "コマンドを終了したい場合は`stop`と入力してください。"
+            content = "Please enter a valid API KEY (43 characters) for stat.ink.\n" + "`skip` if you don't need to work with stat.ink\n" + "Enter `stop` to end the command."
             await ctx.send(content)
 
             def check_msg(msg):
@@ -105,7 +105,7 @@ class Splat(commands.Cog):
                 await ctx.channel.send("The command has been timeout, and please retry.")
                 return
         if config.IsHeroku and not os.getenv("HEROKU_APIKEY", False):
-            await ctx.channel.send("Herokuの環境変数としてHerokuのAPI KEYが入力されていません。\nコマンドを終了します。")
+            await ctx.channel.send("Heroku's API KEY has not been entered as a Heroku environment variable. \nTerminate the command.")
             return
         # try:
         try:
@@ -113,19 +113,19 @@ class Splat(commands.Cog):
             makeConfig = iksm_discord.makeConfig()
             acc_name_set = await makeConfig.make_config_discord(STAT_INK_API_KEY, ctx)
             if acc_name_set is None:
-                await ctx.send("エラーが発生しました。詳細はbotのログを確認してください。")
+                await ctx.send("An error has occurred. Check the bot logs for details.")
                 return
         except Exception as e:
-            error_message = f"エラーが発生しました。\n{traceback.format_exc()}"
+            error_message = f"An error has occurred.\n{traceback.format_exc()}"
             print(error_message)
             await ctx.channel.send(error_message)
             return
         # convert config from s2s to s3s
 
         acc_name = acc_name_set["name"]
-        success_message = "新たに次のアカウントが登録されました。\n" +\
+        success_message = "The following accounts have been newly registered.\n" +\
             f"\t\t`{acc_name}`\n" +\
-            ("\nこの後botは再起動されます。次の操作はしばらくお待ちください。" if config.IsHeroku else "")
+            ("\nAfter this the bot will be restarted. Please wait for the next operation." if config.IsHeroku else "")
         await ctx.channel.send(success_message)
         # access_permission.json編集
         permission_info = {
@@ -225,20 +225,20 @@ class Splat(commands.Cog):
     @commands.command(description="", pass_context=True)
     async def upIksm(self, ctx: commands.Context, acc_name=""):
         """ただちにstat.inkへ戦績をアップロードします。"""
-        await ctx.send("stat.inkへのアップロードを開始します。")
+        await ctx.send("Start uploading to stat.ink.")
         access_info = self.obtainAccessInfo(ctx)
         acc_name_set = await iksm_discord.checkAcc(ctx, acc_name, access_info=access_info)
         await iksm_discord.auto_upload_iksm(fromLocal=False, acc_name_key_in=acc_name_set.get("key", None))
-        await ctx.send("バックグラウンドで処理しています。詳細はログを確認してください。")
+        await ctx.send("Processing in the background. Check the log for details.")
 
     @commands.command(description="", pass_context=True)
     async def upIksmFromLocal(self, ctx: commands.Context, acc_name=""):
         """Localに保存されていた戦績のjsonファイルをstat.inkへアップロードします。"""
-        await ctx.send("stat.inkへ戦績jsonファイルのアップロードを開始します。")
+        await ctx.send("Start uploading stats json files to stat.ink.")
         access_info = self.obtainAccessInfo(ctx)
         acc_name_set = await iksm_discord.checkAcc(ctx, acc_name, access_info=access_info)
         await iksm_discord.auto_upload_iksm(fromLocal=True, acc_name_key_in=acc_name_set.get("key", None))
-        await ctx.send("バックグラウンドで処理しています。詳細はログを確認してください。")
+        await ctx.send("Processing in the background. Check the log for details.")
 
 
 async def setup(bot):

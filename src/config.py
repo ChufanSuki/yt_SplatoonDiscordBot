@@ -4,20 +4,21 @@ import discord
 import glob2
 from dotenv import load_dotenv
 
-SPLATOON_DISCORD_BOT_TOKEN = "MTA5MTQwNjE5MDMzMzkzOTc4Mw.Gak5oY.LQaopVD8y6uFcPD6kNBBfqEGtcd_UX0Ndkor6g"
+SPLATOON_DISCORD_BOT_TOKEN = None
+SPLATOON_DISCORD_BOT_TOKEN_TEST = None
 
 # read .env
 env_files = sorted(glob2.glob("../../**/.env"))
 if len(env_files) > 0:
     load_dotenv(env_files[0])
 
-# とりあえずHerokuには非対応
+# Not compatible with Heroku for the time being
 IsHeroku = False
 
-# 環境変数からDiscord bot tokenを読み取る
+# Read Discord bot token from environment variable
 DISCORD_TOKENS = {
     "main": SPLATOON_DISCORD_BOT_TOKEN,
-    "test": os.environ.get("SPLATOON_DISCORD_BOT_TOKEN_TEST", SPLATOON_DISCORD_BOT_TOKEN)
+    "test": SPLATOON_DISCORD_BOT_TOKEN_TEST
 }
 
 # dir_path_present = os.path.dirname(__file__)
@@ -67,12 +68,12 @@ DM_IS_REQUIRED = "DM" in python_args
 # main
 BOT_MODE = "test" if "test" in python_args else "main"
 DISCORD_TOKEN = DISCORD_TOKENS[BOT_MODE]
-extensions_dict = {  # cogの導入
+extensions_dict = {  # cog
     "default": ["ext_splat"]
 }
 
-description = f"stat.inkへ戦績自動アップロードを行うbotです。\nまずはstat.inkのAPI KEYを用意してください。\n" +\
-    "詳しい使い方はこちら -> https://github.com/TomoTom0/yt_SplatoonDiscordBot"
+description = f"A bot that automatically uploads battle records to stat.ink.\n First, prepare the stat.ink API KEY.\n" +\
+    "Detailed usage here -> https://github.com/TomoTom0/yt_SplatoonDiscordBot"
 
 # --------- additional functions -----------
 

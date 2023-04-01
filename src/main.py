@@ -29,20 +29,18 @@ async def main():
     bot = commands.Bot(command_prefix=COMMAND_PREFIX,
                        description=description, intents=intents)
 
-    """
-    ctxのinstance: 実質global
-    """
+    # ctx instance: 実質global
     commands.Context.extensions_dict = extensions_dict
     commands.Context.extensions = extensions_dict.get("default", [])
 
-    # 起動時に動作する処理
+    # Actions that run at startup
     @bot.event
     async def on_ready():
         await additional_functions_dict.get("on_ready", _empty_func)(bot)
-        print(f"Logged in as\n    {bot.user.name}\n    {BOT_MODE}\n    {bot.user.id}\n------")
+        print(f"Logged in as\n   {bot.user.name}\n    {BOT_MODE}\n    {bot.user.id}\n------")
         sys.stdout.flush()
 
-    # メッセージ受信時に動作する処理
+    # Processing that operates when a message is received
     @bot.event
     async def on_message(message_orig):
         flag_continue = await additional_functions_dict.get("on_message_judge", _empty_func)(bot, message_orig)
@@ -50,21 +48,21 @@ async def main():
 
         if flag_continue is False:
             return
-        elif isinstance(message_new, discord.Message):
+        if isinstance(message_new, discord.Message):
             message = message_new
         else:
             message = message_orig
 
         await additional_functions_dict.get("on_message", _empty_func)(bot, message_orig)
-        # メッセージ送信者がBotだった場合は無視する
+        # Ignore if the message sender is a bot
         if message.author.bot is True:
             return
 
-        # bot.commandにmessageを流す
+        # Send message to bot.command
         try:
             await bot.process_commands(message)
         except Exception as e:
-            error_message = f"エラーが発生しました。\n{traceback.format_exc()}"
+            error_message = f"An error has occurred. \n{traceback.format_exc()}"
             print(error_message)
             sys.stdout.flush()
         sys.stdout.flush()
